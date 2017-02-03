@@ -1,0 +1,99 @@
+.model tiny
+.code
+mov cx,32000
+erase:
+mov bx,cx
+mov byte [offset Zahl+bx],0
+loop erase
+mov byte [offset Zahl+32000],1
+xor ax,ax
+verd:
+mov ax,0900h
+mov dx,offset Coun
+int 21h
+mov cx,32000
+xor ax,ax
+asd:
+mov bx,cx
+mov al,[offset Zahl+bx]
+shl al,1
+add al,ah
+xor ah,ah
+mov [offset Zahl+bx],al
+cmp al,9
+;
+mov dx,offset Coun
+int 21h
+mov cx,32000
+;
+jg greater
+loop asd
+greater:
+;
+mov dx,offset Coun
+int 21h
+mov cx,32000
+;
+mov ah,1
+sub al,10
+mov [offset Zahl+bx],al
+;
+mov dx,offset Coun
+int 21h
+mov cx,32000
+;
+loop asd
+
+mov dx,offset Coun
+int 21h
+mov cx,32000
+
+mov cx,5
+xor ah,ah
+
+mov ax,0900h
+mov dx,offset Coun
+int 21h
+
+zaehl:
+mov bx,cx
+mov al,[offset Coun+bx]
+inc al
+add al,ah
+mov [offset Coun+bx],al
+cmp al,9
+jg gre
+loop zaehl
+gre:
+sub al,10
+mov ah,1
+mov [offset Coun+bx],al
+loop zaehl
+cmp al,1
+je fertig
+jmp verd
+fertig:
+
+mov ax,0900h
+mov dx,offset Coun
+int 21h
+
+mov ax,3c00h
+mov dx,offset Dat
+mov cx,0
+int 21h
+mov bx,ax
+mov ax,4000h
+mov cx,32001
+mov dx,offset Zahl
+int 21h
+mov ax,3e00h
+int 21
+mov ax,4c00h
+int 21h
+
+.data
+Coun	db "000000$"
+Dat	db "C:\WINDOWS\DESKTOP\zweihoch.txt",0
+Zahl	db 0,0
+end

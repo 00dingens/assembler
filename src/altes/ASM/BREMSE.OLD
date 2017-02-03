@@ -1,0 +1,19 @@
+.model tiny
+.code
+mov ax,0
+mov ds,ax
+mov [0004],cx
+mov [0006],offset br
+stt
+mov ax,4c00
+int 21
+
+br:
+push cx
+mov cx,0010
+schleife:
+loop schleife
+pop cx
+iret
+
+end

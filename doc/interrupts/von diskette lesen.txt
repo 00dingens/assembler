@@ -1,0 +1,23 @@
+Interrupt 13h  Disk I/O - access the disk drives (floppy and hard disk)
+(0:004Ch)      does not try rereading disk if an error is returned
+
+
+Function 02h    Read Sectors - read one or more sectors from diskette
+entry   AH      02h
+        AL      number of sectors to read
+        BX      address of buffer (ES=segment)
+        CH      track number (0-39 or 0-79 for floppies)
+                (for hard disk, bits 8,9 in high bits of CL)
+        CL      sector number (1 to 18, not value checked)
+        DH      head number (0 or 1)
+        DL      drive (0=A, 1=B, etc.) (bit 7=0)  (drive 0-7)
+        ES:BX   address to store/fetch data  (buffer to fill)
+       [0000:0078]  dword pointer to diskette parms
+return  CF      clear (0) for successful
+                set (1) failure
+                AH      status (00h, 02h, 03h, 04h, 08h, 09h, 10h, 0Ah, 20h,
+                        40h, 80h)
+        AL      number of sectors transferred
+note 1) Number of sectors begins with 1, not 0
+     2) Trying to read zero sectors is considered a programming error; results
+        are not defined

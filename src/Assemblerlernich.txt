@@ -1,0 +1,228 @@
+Universalregister:
+
+AX Akkumulator
+BX Base-Register
+CX Count-Register
+DX Daten-Register
+
+Index- und Pointer-Register:
+
+SI Source Index
+DI Destination Index
+BP Base Pointer-Register
+SP Stackpointer
+IP Instruction Pointer
+
+Segmentregister:
+
+CS Codesegment-Register
+DS Datensegment-Register
+SS Stacksegment-Register
+ES Extrasegment-Register
+
+Flags:
+
+b0 CF Carry-Flag           (Überlauf bei Add und Sub)
+b2 PF Parity-Flag          (Parität: 1 = gerade)
+b4 AF Auxillary-Carry-Flag (Überlauf zwischen Nibbles)
+b6 ZF Zero-Flag            (1, wenn Ergebnis = 0)
+b7 SF Sign-Flag            (Das Oberse Bit d. Ergebnisses)
+b8 TF Trap-Flag            (1 = nach jedem Schritt INT 1)
+b9 IF Interrupt-Flag       (1, wenn Hardwareinterrupts erlaubt)
+bA DF Direction-Flag       (Bearbeitungsrichtung 1 = absteigend)
+bB OF Overflow-Flag        (Überlauf bei Mul)
+
+...
+
+CS:IP Adresse der nächsten abzuarbeitenden Instruktion
+SS:SP Adresse des Stackanfang
+DS:SI 
+ES:DI
+DS:DI
+SS:BP
+
+Indirekte Adressierung:
+
+BP -> SS-Register
+BX -> DS-Register
+
+Einige Adressen:
+
+FFFF:0000 - FFFF:000F Nach jedem Reset beginnt die CPU ab der Adresse FFFF:0000 mit der Abarbeitung der ersten Befehle (bis FFFF:000F).
+0000:0000 - 0000:03FF Interruptvektoren (Adresse für INT x: 0000:[x * 4])
+0000:0400 - 0000:04FF BIOS-Datenbereich
+0000:0408 Portadresse LPT1:
+0000:040A Portadresse LPT2:
+0000:040C Portadresse LPT3:
+0000:040E Portadresse LPT4:
+B800: Bildschirmspeicher (Monochrom B000:), jedes Zeichen belegt ein Wort.
+
+Interrupts:
+
+INT 10 Bildschirm setzen AX = Modus
+INT 19 DOS System Warmstart
+INT 21
+Zeichen von Tastatur lesen: AH = 07 -> AL = Zeichen (wenn AL = 0 dann Funktion nochmal aufrufen, weil erweitertes Zeichen.)
+Zeichen von Tastatur lesen (kann mit Strg + C abgebrochen werden): AH = 08 sonst wie 07
+Text ausgeben: AH = 09 DS:DX = Text, mit beendendem '$'
+Datei öffnen: AH = 3D AL = Zugriffsmodus (00 = nur lesen 01 = nur schreiben 02 = nur lesen) DS:DX = Dateiname mit beendendem 00 -> CF = 0 dann AX = Handle sonst AX = Fehler (00 = Dat schon offen 01 = Dat nicht gefunden 02 = Pfad nicht gefunden 03 = Kein freies Handle 04 = Zugriff verweigert)
+
+
+Vereinfachungen:
+XOR AX,AX  löscht AX am schnellsten.
+AND AL,0F  löscht oberes Nibble von AL.
+
+Anmerkungen:
+Bei Adressierung: Physikalische Adresse = Segment * 2 ^ 4 + Offset.
+Alle bedingten Sprünge sind SHORT, ab 80386 NEAR.
+LOCK, REP, REPE, REPNE, ES:,... immer als Präfix.
+das Wort 3FFF wird als FF 3F ausgegeben.
+
+Bezeichnungen:
+Nibble=4 bit
+Byte=oberes+unteres Nibble=8 bit
+Wort(Word)=2 Byte=16 bit
+DWord(Doubleword)=2 Words=4 Byte
+QWord(Quattroword=8 Byte
+...
+
+
+Befehle:
+AAA                   nach ungepackt-BCD-Add korrigiert AL (modifiziert: AF,CF undefiniert: OF,PF,SF,ZF).
+AAD                   vor ungepackt-BCD-Div korrigiert AL (modifiziert: PF,SF,ZF undefiniert: AF,OF,CF).
+AAM                   nach ungepackt-BCD-Mul korrigiert AL (modifiziert: PF,SF,ZF undefiniert: AF,OF,CF).
+AAS                   nach ungepackt-BCD-Sub korrigiert AL (modifiziert: AF,CF undefiniert: OF,PF,SF,ZF).
+ADC Ziel,Quelle       wie ADD, addiert zusätzlich CF.
+ADD Ziel,Quelle       addiert Quelle auf Ziel (modifiziert: AF,CF,OF,PF,SF,ZF).
+AND Ziel,Quelle       AND-Verknüpfung (löscht: OF,CF modifiziert: SF,ZF,PF undefiniert: AF)
+BSWAP Ziel            Ziel=reg32 vertauscht Byte 1 u 4, 2 u 3.
+BT Quelle,Nr          das bit aus Quelle an Pos Nr wird in CF kopiert.
+BTC Quelle,Nr         das bit aus Quelle an Pos Nr wird in CF kopiert. Das bit in der Quelle wird implementiert.
+BTR Quelle,Nr         das bit aus Quelle an Pos Nr wird in CF kopiert. Das bit in der Quelle wird gelöscht.
+BTS Quelle,Nr         das bit aus Quelle an Pos Nr wird in CF kopiert. Das bit in der Quelle wird gesetzt.
+BSF Ziel,Quelle       Quelle=mem16/mem32 Ziel=reg16/reg32 Quelle bitweise aufwärts auf 0 getestet, nr des ersten gesetzten bit in Ziel.
+BSR Ziel,Quelle       Quelle=mem16/mem32 Ziel=reg16/reg32 Quelle bitweise abwärts auf 0 getestet, nr des ersten gesetzten bit in Ziel.
+CALL FAR Ziel         ruft Unterprogramm auf (xxxx:xxxx). CS und IP werden auf Stack gespeichert.
+CALL NEAR Ziel        ruft Unterprogramm auf (xxxx). IP wird auf Stack gespeichert.
+CBW                   nimmt den Inhalt von AL und erweitert den Wert mit Vorzeichen auf AX.
+CDQ                   nimmt den Inhalt von EAX und erweitert den Wert mit Vorzeichen auf EDX:EAX.
+CLC                   löscht CF.
+CLD                   löscht DF.
+CLI                   löscht IF.
+CMC                   invertiert CF.
+CMP Ziel, Quelle      wie SUB, aber Operanden bleiben unverändert (nur Flags nicht).
+CMPSB/W/D             vergleicht [DS:SI] und [ES:DI] ([DS:SI] - [ES:DI]) (modifiziert: AF,CF,OF,PF,SF). Beide Adressen zeigen danach aufs nächste Stringelement.
+CWD                   nimmt den Inhalt von AX und erweitert den Wert mit Vorzeichen auf DX:AX.
+CWDE                  nimmt den Inhalt von AX und erweitert den Wert mit Vorzeichen auf EAX.
+DAA                   nach gepackt-BCD-Add korrigiert AL (modifiziert: AF,CF,PF,SF,ZF).
+DAS                   nach gepackt-BCD-Sub korrigiert AL (modifiziert: AF,CF,PF,SF,ZF).
+DEC Operand           dekrementiert den Operand (modifiziert: AF,OF,PF,SF,ZF).
+DIV Quelle            dividend: AL/AX/EAX divisor: Quelle Quotient: AL/AX/EAX Rest: AH/DX/EDX (undefiniert: AF,CF,OF,PF,SF,ZF)
+ESC                   leitet einen Opcode ein, der durch einen externen Prozessor (z.B. 8087) bearbeitet wird.
+HLT                   CPU in HALT-Modus (dieser läßt sich durch einen Reset oder einen Harwareinterrupt beenden).
+IDIV Quelle           wie DIV, für Vorzeichenbehaftete Zahlen.
+IMUL Quelle           wie MUL, für Vorzeichenbehaftete Zahlen.
+IMUL Ziel,Quelle      multipliziert, Ergebnis kommt in Ziel
+IMUL Ziel,Q1,Q2       multipliziert Q1, Q2, Ergebnis kommt in Ziel, Q2 muss Konstante sein.
+INC Operand           Inkrementiert den Operand (modifiziert: AF,OF,PF,SF,ZF).
+INC Operand,1         Inkrementiert den Operand (modifiziert: AF,CF,OF,PF,SF,ZF).
+IN Ziel,DX            liest aus 16-Bit-Port(DX) in AX/AL.
+IN Ziel,Quelle        liest aus 8-Bit-Port in AX/AL.
+INT Nummer            ruft Interrupt auf (0 - FF). Flags, CS und IP werden auf Stack gespeichert.
+INSB/W/D              liest aus 16-bit-Port(DX) in ES:DI. Dann wird DI um 1/2/4 erhöht.
+IRET                  kehrt von INT zurück (restauriert IP, CS und Flags).
+JA Label              auch JNBE, (CF AND ZF) = 0 | X > 0
+JAE Label             auch JNB,  CF = 0 | X >= 0
+JB Label              auch JNAE, JC, CF = 1 | X < 0
+JBE Label             auch JNA, (CF OR ZF) = 1 | X <= 0
+JC Label              CF = 1
+JCXZ Label            CX = 0
+JECXZ Label           ECX = 0
+JG Label              auch JNLE, ((SF XOR OF) OR ZF) = 0 | X > Y
+JGE Label             auch JNL, (SF XOR OF) = 0 | X <= Y
+JL Label              auch JNGE, (SF XOR OF) = 1 | X < 0
+JLE Label             auch JNG, ((SF XOR OF) OR ZF) = 1 | X <= 0
+JMP FAR Label         springt überallhin (xxxx:xxxx).
+JMP NEAR Label        springt im Codesegment (xxxx).
+JMP SHORT Label       springt um +127/-128 (xx).
+JNA Label             auch JBE, (CF OR ZF) = 1 | X <= 0
+JNAE Label            auch JB, JC, CF = 1 | X < 0
+JNB Label             auch JAE,  CF = 0 | X >= 0
+JNBE Label            auch JA, (CF AND ZF) = 0 | X > 0
+JNC Label             CF = 0
+JNE Label             auch JNZ, ZF = 0 | X <> Y X <> 0
+JNG Label             auch JLE, ((SF XOR OF) OR ZF) = 1 | X <= 0
+JNLE Label            auch JG, ((SF XOR OF) OR ZF) = 0 | X > Y
+JNL Label             auch JGE, (SF XOR OF) = 0 | X <= Y
+JNO Label             OF = 0
+JNP Label             auch JPO, PF = 0
+JNS Label             SF = 0
+JNZ Label             ZF = 0
+JO Label              OF = 1
+JP Label              auch JPE, PF = 1
+JPE Label             auch JP, PF = 1
+JPO Label             auch JNP, PF = 0
+JS Label              SF = 1
+JZ Label              ZF = 1
+LAHF                  lädt die unteren 8 Bit des Flag-Registers nach AH.
+LDS Ziel,Quelle       LDS SI,[DI] liest z. B. die Speicherstelle DS:DI und überträgt das Low-Word (Offset) in das Zielregister SI. Das High-Word (Segmentadresse) wird dann in DS geladen.
+LEA reg,[adr]         ermittelt die Summe des in der Klammer [..] angegebenen Ausdruckes und speichert sie in reg (AX/BX/CX/DX).
+LES Ziel,Quelle       siehe LDS, die Segmentadresse wird aber nicht in DS sondern in ES gespeichert.
+LOCK                  als Präfix, signalisiert einem Koprozessor, daß der folgende Befehl nicht unterbrochen werden darf.
+LODSB/W/D             kopiert DS:SI in AL/AX/EAX, SI zeigt danach aufs nächste Stringelement. LODSD ab 80386.
+LOOP SHORT Label      decrementiert CX, wenn CX <> 0 dann springe nach Label (xx).
+LOOPE SHORT Label     auch LOOPZ SHORT, wie LOOP, aber springt nur, wenn ZF = 1
+LOOPNE SHORT Label    auch LOOPNZ SHORT, wie LOOP, aber springt nur, wenn ZF = 0
+MOV Ziel,Quelle       verschiebt 8/16-Bit-Wert von Quelle nach Ziel.
+MOVSB/W/D             kopiert Byte/Word/DWord von DS:SI nach ES:DI, danach zeigen SI und DI auf das nächste Stringelement.
+MOVSX Ziel,Quelle     Quelle=reg8/mem8 Ziel=reg16/reg32 mov und cbw/cwde gleichzeitig mit Vorzeichen.                
+MOVZX Ziel,Quelle     Quelle=reg8/mem8 Ziel=reg16/reg32 mov und cbw/cwde gleichzeitig ohne Vorzeichen.                
+MUL Quelle            multipliziert Quelle mit AL/AX/EAX, Ergebnis kommt nach AX/DX:AX/EDX:EAX. (wenn obere Hälfte des Ergebnisses = 0 weden CF,OF gelöscht, sonst gesetzt).
+NEG Operand           subtrahiert den Operanden von der Zahl 0 (modifiziert: AF,CF,OF,PF,SF,ZF).
+NOP                   tut nichts, Platzhalter im Programm.
+NOT Operand           invertiert alle Bits des Operanden.
+OR Ziel,Quelle        OR-Verknüpfung (löscht: OF,CF modifiziert: SF,ZF,PF undefiniert: AF)
+OUT DX,Quelle         schreibt AX/AL in 16-Bit Port(DX).
+OUT Ziel,Quelle       schreibt AX/AL in 8-Bit-Port.
+OUTB/W/D              schreibt von ES:DI nach 16-bit-Port(DX). Dann wird DI um 1/2/4 erhöht.
+POP Ziel              liest ein 16/32-Bit-Wort vom Stack in das angegebene Register oder die Speicherzelle ein.
+POPA(D)               umkehr von PUSHA/PUSHAD.
+POPF(D)                  liest die (E)Flags vom Stack.
+POPW/D Quelle         liest 32/64-Bit auf dem Stack ab.
+PUSH Quelle           speichert den Inhalt eines 16/32-Bit-Registers oder Speicherzelle auf dem Stack ab.
+PUSHA(D)              PUSHt AX, CX, DX, BX, SP, BP, SI, DI. PUSHAD für die 32-Bit-Varianten der Register.
+PUSHF(D)              speichert die (E)Flags auf dem Stack ab.
+PUSHW/D Quelle        speichert 32/64-Bit auf dem Stack ab.
+RCL Ziel,Count        rotiert durch CF nach links.
+RCR Ziel,Count        umkehrung von RCL.
+REP                   als Präfix, wiederholt nachfolgenden String-Befehl, bis CX = 0.
+REPE                  auch REPZ, wie REP, aber nur wenn ZF = 1
+REPNE                 auch REPNZ, wie REP, aber nur wenn ZF = 0
+REPNZ                 auch REPNE, wie REP, aber nur wenn ZF = 0
+REPZ                  auch REPE, wie REP, aber nur wenn ZF = 1
+RET                   kehrt aus NEAR-Unterprogramm zurück.
+RET Länge             Rückkehradresse wird gelesen, dann der Stackpointer um x * 2 (x Worte) erhöht.
+RETF                  kehrt aus FAR-Unterprogramm zurück.
+ROL Ziel,Count        rotiert um Count nach links.
+ROR Ziel,Count        umkehrung von ROL.
+SAHF                  umkehrung von LAHF.
+SAL Ziel,Count        auch SHL, Shift um Count nach links, unteres Bit = 0.
+SAR Ziel,Count        shift nach rechts, oberes Bit bleibt.
+SBB Ziel,Quelle       wie SUB, subtrahiert zusätzlich CF.
+SCASB/W/D             wie CMPS, statt [DS:SI] aber AL/AX/EAX (modifiziert: AF,CF,OF,SF,PF,SF,ZF). DI zeigt danach aufs nächste Stringelement.
+SETcc
+SHLD Ziel,Quelle,Anz  >>shift left with double precision<<
+SHR Ziel,Count        shift nach rechts, oberes Bit = 0.
+SHRD Ziel,Quelle,Anz  >>shift right with double precision<<
+STC                   setzt CF.
+STD                   setzt DF.
+STI                   setzt IF.
+STOSB/W/D             wie LODS, kopiert aber andersherum (AL/AX/EAX nach ES:DI).
+SUB Ziel,Quelle       subtrahiert Quelle von Ziel (modifiziert: AF,CF,OF,PF,SF,ZF).
+TEST Ziel,Quelle      wie AND, nur bleiben beide Werte unverändert.
+WAIT                  CPU in den WAIT-Mode, falls die Leitung TEST nicht aktiv ist.
+XCHG Stelle1,Stelle2  vertauscht die Werte.
+XLAT                  liest den durch BX+AL adressierten Tabellenwert aus dem DS und speichert diesen in AL.
+XOR Ziel,Quelle       XOR-Verknüpfung (löscht: OF,CF modifiziert: SF,ZF,PF undefiniert: AF)
+
+

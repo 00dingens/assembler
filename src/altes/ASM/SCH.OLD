@@ -1,0 +1,45 @@
+.model tiny
+.code
+mov ax,0013h
+int 10h
+mov di,offset Fls
+mov cx,[di]
+Relativieren:
+mov ax,10
+mul cl
+mov bx,ax
+mov ax,[di+bx+1]
+sub [di+bx+4],ax
+sub [di+bx+7],ax
+mov ax,[di+bx+2]
+sub [di+bx+5],ax
+sub [di+bx+8],ax
+mov ax,[di+bx+3]
+sub [di+bx+6],ax
+sub [di+bx+9],ax
+loop Relativieren
+;jetzt sind die Koordinaten des 2. u 3. Punktes relativ.
+mov cx,0ffffh
+Punkt:
+mov ax,[di]
+mov xxx,ax
+Fleche:
+
+
+dec byte xxx
+jnz Fleche
+
+loop Punkt
+mov ax,0700h
+int 21
+mov ax,0003h
+int 10h
+mov ax,4c00h
+int 21h
+
+.data
+xxx	db 0
+nm	db 0,0
+Fls	db 1
+	db 10,10,10,20,10,30,10,20,20,1
+end

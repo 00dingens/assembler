@@ -1,0 +1,367 @@
+00 #1##2##3 ADD #1,#2
+01 #4##5##3 ADD #4,#5
+02 #1##2##3 ADD #2,#1
+03 #4##5##3 ADD #5,#4
+04          ADD AL,B
+05          ADD AX,W
+06          PUSH ES
+07          POP ES
+08 #1##2##3 OR #1,#2
+09 #4##5##3 OR #4,#5
+0A #1##2##3 OR #2,#1
+0B #4##5##3 OR #5,#4
+0C          OR AL,B
+0D          OR AX,W
+0E          PUSH CS
+0F          DB 0F
+10 #1##2##3 ADC #1,#2
+11 #4##5##3 ADC #4,#5
+12 #1##2##3 ADC #2,#1
+13 #4##5##3 ADC #5,#4
+14          ADC AL,B
+15          ADC AX,W
+16          PUSH SS
+17          POP SS
+18 #1##2##3 SBB #1,#2
+19 #4##5##3 SBB #4,#5
+1A #1##2##3 SBB #2,#1
+1B #4##5##3 SBB #5,#4
+1C          SBB AL,B
+1D          SBB AX,W
+1E          PUSH DS
+1F          POP DS
+20 #1##2##3 AND #1,#2
+21 #4##5##3 AND #4,#5
+22 #1##2##3 AND #2,#1
+23 #4##5##3 AND #5,#4
+24          AND AL,B
+25          AND AX,W
+26          ES:
+27          DAA
+28 #1##2##3 SUB #1,#2
+29 #4##5##3 SUB #4,#5
+2A #1##2##3 SUB #2,#1
+2B #4##5##3 SUB #5,#4
+2C          SUB AL,B
+2D          SUB AX,W
+2E          CS:
+2F          DAS
+30 #1##2##3 XOR #1,#2
+31 #4##5##3 XOR #4,#5
+32 #1##2##3 XOR #2,#1
+33 #4##5##3 XOR #5,#4
+34          XOR AL,B
+35          XOR AX,W
+36          SS:
+37          AAA
+38 #1##2##3 CMP #1,#2
+39 #4##5##3 CMP #4,#5
+3A #1##2##3 CMP #2,#1
+3B #4##5##3 CMP #5,#4
+3C          CMP AL,B
+3D          CMP AX,W
+3E          DS:
+3F          AAS
+4 0##5      INC #5
+4 1##5      DEC #5
+5 0##5      PUSH #5
+5 1##5      POP #5
+6X          DB 6X
+70          JO B1
+71          JNO B1
+72          JB B1
+73          JNB B1
+74          JZ B1
+75          JNZ B1
+76          JBE B1
+77          JA B1
+78          JS B1
+79          JNS B1
+7A          JPE B1
+7B          JPO B1
+7C          JL B1
+7D          JGE B1
+7E          JLE B1
+7F          JG B1
+80 #1##6##3 #6 BYTE PTR #1,B
+81 #4##6##3 #6 WORD PTR #4,W
+82 #1##6##3 #6 BYTE PTR #1,B
+83 #4##6##3 #6 WORD PTR #4,-B
+84 #1##2##3 TEST #2,#1
+85 #4##5##3 TEST #5,#4
+86 #1##2##3 XCHG #2,#1
+87 #4##5##3 XCHG #5,#4
+88 #1##2##3 MOV #1,#2
+89 #4##5##3 MOV #4,#5
+8A #1##2##3 MOV #2,#1
+8B #4##5##3 MOV #5,#4
+8C #4##7##3 MOV #4,#7
+8D #4##5##3 LEA #5,#4
+8E #4##7##3 MOV #7,#4
+8F #4XXX##3 POP #4
+90          NOP
+9 0#5       XCHG #5,AX
+98          CBW
+99          CWD
+9A          CALL W:W
+9B          WAIT
+9C          PUSHF
+9D          POPF
+9E          SAHF
+9F          LAHF
+A0          MOV AL,[W]
+A1          MOV AX,[W]
+A2          MOV [W],AL
+A3          MOV [W],AX
+A4          MOVSB
+A5          MOVSW
+A6          CMPSB
+A7          CMPSW
+A8          TEST AL,B
+A9          TEST AX,W
+AA          STOSB
+AB          STOSW
+AC          LODSB
+AD          LODSW
+AE          SCASB
+AF          SCASW
+B 0##2      MOV #2,B
+B 1##5      MOV #5,W
+C0          DB C0
+C1          DB C1
+C2          RET W
+C3          RET
+C4 #4##5##3 LES #5,#4
+C5 #4##5##3 LDS #5,#4
+C6 #1XXX##3 MOV BYTE PTR #1,B
+C7 #4XXX##3 MOV WORD PTR #4,W
+C8          DB C8
+C9          DB C9
+CA          RETF W
+CB          RETF
+CC          INT 3
+CD          INT B
+CE          INTO
+CF          IRET
+D0 #1##8##3 #8 BYTE PTR #1,1
+D1 #4##8##3 #8 WORD PTR #4,1
+D2 #1##8##3 #8 BYTE PTR #1,CL
+D3 #4##8##3 #8 WORD PTR #4,CL
+D40A        AAM
+D4          AAM B
+D50A        AAD
+D5          AAD B
+D6          DB D6
+D7          XLAT
+D8 #A##9##3 #9 DWORD PTR #3
+D8C 0XXX    FADD ST,ST(X)
+D8C 1XXX    FMUL ST,ST(X)
+D8D 0XXX    FCOM ST(X)
+D8D 1XXX    FCOMP ST,ST(X)
+D8E 0XXX    FSUB ST(X)
+D8E 1XXX    FSUBR ST,ST(X)
+D8F 0XXX    FDIV ST,ST(X)
+D8F 1XXX    FDIVR ST,ST(X)
+D9 #A##B##3 #B
+D9C 0XXX    FLD ST(X)
+D9C 1XXX    FXCH ST(X)
+D9D0        FNOP
+D9D 0##5    ESC 0A,#5
+D9D 1XXX    FSTP ST(x)
+D9E0        FCHS
+D9E1        FABS
+D9E2        
+D9E3        
+D9E4        FTST
+D9E5        FXAM
+D9E6        
+D9E7        
+D9E8        FLD1
+D9E9        FLDL2T
+D9EA        FLDL2E
+D9EB        FLDPI
+D9EC        FLDLG2
+D9ED        FLDLN2
+D9EE        FLDZ
+D9EF        
+D9F0        F2XM1
+D9F1        FYL2X
+D9F2        FPTAN
+D9F3        FPATAN
+D9F4        FXTRACT
+D9F5        
+D9F6        FDECSTP
+D9F7        FINCSTP
+D9F8        FPREM
+D9F9        FYL2XP1
+D9FA        FSQRT
+D9FB        
+D9FC        FRNDINT
+D9FD        FSCALE
+D9FE        
+D9FF        
+DA #A##C##3 #C DWORD PTR #A
+DA 11XXX##2 ESC 1X,#2
+DB #A000##3 FILD DWORD PTR #A
+DB #A001##3 ESC 19, #A TBYTE PTR #A
+DB #A010##3 FIST DWORD PTR #A
+DB #A011##3 FISTP DWORD PTR #A
+DB #A100##3 ESC 1C, #A TBYTE PTR #A
+DB #A101##3 FLD TBYTE PTR #A
+DB #A110##3 ESC 1E, #A TBYTE PTR #A
+DB #A111##3 FSTP TBYTE PTR #A
+DB 11XXX##2 ESC 18+X,#2
+DBE0        FENI
+DBE1        FDISI
+DBE2        FCLEX
+DBE3        FINIT
+DC #A##9##3 #9 QWORD PTR #A
+DCC 0XXX    FADD ST(X),ST
+DCC 1XXX    FMUL ST(X),ST
+DCD 0XXX    FCOM ST(X)
+DCD 1XXX    FCOMP ST(X),ST
+DCE 0XXX    FSUBR ST(X)
+DCE 1XXX    FSUB ST(X),ST
+DCF 0XXX    FDIVR ST(X),ST
+DCF 1XXX    FDIV ST(X),ST
+DD #A000##3 FLD QWORD PTR #A
+DD #A001##3 ESC 29, #A, #A
+DD #A010##3 FST QWORD PTR #A
+DD #A011##3 FSTP QWORD PTR #A
+DD #A100##3 FRSTOR #A
+DD #A101##3 ESC 2D, #A#A
+DD #A110##3 FSAVE #A
+DD #A111##3 FSTSW #A
+DDC 0XXX    FFREE ST(X)
+DDC 1XXX    FXCH ST(X)
+DDD 0XXX    FST ST(X)
+DDD 1XXX    FSTP ST(X)
+DDE 0##5    ESC 2C,##5
+DDE 1##5    ESC 2D,##5
+DDF 0##5    ESC 2E,##5
+DDF 1##5    ESC 2F,##5
+DE #A##C##3 #C WORD PTR #A
+DA 11XXX##2 ESC 1X,#2
+
+
+
+#1 b76       (B)
+00	[#3]
+01	[#3-B]
+10	[#3+W]
+11	#2
+
+#2 b543      (B)
+000	AL
+001	CL
+010	DL
+011	BL
+100	AH
+101	CH
+110	DH
+111	BH
+
+#3 b210
+000	[BX+SI]
+001	[BX+DI]
+010	[BP+SI]
+011	[BP+DI]
+100	[SI]
+101	[DI]
+110	[W]
+111	[BX]
+
+#4 b76       (W)
+00	[#3]
+01	[#3-B]
+10	[#3+W]
+11	#5
+
+#5 b543 b210 (W)
+000	AX
+001	CX
+010	DX
+011	BX
+100	SP
+101	BP
+110	SI
+111	DI
+
+#6 b543
+000	ADD
+001	OR
+010	ADC
+011	SBB
+100	AND
+101	SUB
+110	XOR
+111	CMP
+
+#7 b543
+X00	ES
+X01	CS
+X10	SS
+X11	DS
+
+#8 b543
+000	ROL
+001	ROR
+010	RCL
+011	RCR
+100	SHL
+101	SHR
+110	???
+111	SAR
+
+#9  b543
+000	FADD
+001	FMUL
+010	FCOM
+011	FCOMP
+100	FSUB
+101	FSUBR
+110	FDIV
+111	FDIVR
+
+#A b76
+00	[#3]
+01	[#3-B]
+10	[#3+W]
+
+#B b543
+000	FLD	DWORD PTR #3
+001	ESC	09 #3,#3
+010	FST	DWORD PTR #3
+011	FSTP	DWORD PTR #3
+100	FLDENV	#3
+101	FLDCW	#3
+110	FSTENV	#3
+111	FSTCW	#3
+
+#C
+000	FIADD
+001	FIMUL
+010	FICOM
+011	FICOMP
+100	FISUB
+101	FISUBR
+110	FIDIV
+111	FIDIVR
+
+B1
+B1 = 102 + B1 * 7
+(gelogen)
+
+Zeichenerklärungen:
+- Vorzeichen wird beachtet
+# Schlüssel (mit Nr.)
+B BYTE hinter dem Befehl (mit Nr. > Byte Schlüssel)
+W WORD hinter dem Befehl
+Alle Werte in HEX
+
+überprüfen:
+0500AB        ADD	AX,AB00	Wg bytereihenfolge 00<>AB
+30<>32 bzw 31<>33 macht das sinn?
+8000AB        ADD	BYTE PTR [BX+SI],AB
+8200AB        ADD	BYTE PTR [BX+SI],AB
+80<>82 das selbe?

@@ -1,0 +1,89 @@
+Leeren:
+0D22:0100 32C0          XOR	AL,AL                              
+0D22:0102 B501          MOV	CH,01                              
+0D22:0104 BF6501        MOV	DI,0165                            
+0D22:0107 57            PUSH	DI                                 
+0D22:0108 F3            REPZ	                                   
+0D22:0109 AA            STOSB	                                   
+
+Init:
+0D22:010A 5F            POP	DI                                 
+0D22:010B BE0108        MOV	SI,0801                            
+
+Schritt:
+0D22:010E B401          MOV	AH,01                              
+0D22:0110 46            INC	SI                                 
+0D22:0111 8A04          MOV	AL,[SI]                            
+0D22:0113 BBF300        MOV	BX,00F3                            
+0D22:0116 D7            XLAT	                                   
+0D22:0117 FFD0          CALL	AX                                 
+0D22:0119 EBF3          JMP	010E                               
+
+Plus:
+0D22:011B FE05          INC	BYTE PTR [DI]                      
+0D22:011D C3            RET	                                   
+
+0D22:011E ........      DB	"+,-."
+
+Punkt:
+0D22:0122 8A15          MOV	DL,[DI]                            
+0D22:0124 B402          MOV	AH,02                              
+0D22:0126 CD21          INT	21                                 
+0D22:0128 C3            RET	                                   
+
+Schleife2:
+0D22:0129 58            POP	AX                                 
+0D22:012A 5E            POP	SI                                 
+0D22:012B 4E            DEC	SI                                 
+0D22:012C EBE0          JMP	010E                               
+
+Platz:
+0D22:012E 90            NOP	                                   
+
+0D22:012F ..            DB	"<"                              
+
+Ende:
+0D22:0131 B44C          MOV	AH,4C                                 
+0D22:0132 CD21          INT	21                                 
+
+Links:
+0D22:0134 4F            DEC	DI                                 
+0D22:0135 C3            RET	                                   
+
+Minus:
+0D22:0136 FE0D          DEC	BYTE PTR [DI]                      
+0D22:0138 C3            RET	                                   
+
+Komma:
+0D22:0139 B407          MOV	AH,07                              
+0D22:013B CD21          INT	21                                 
+0D22:013D 8805          MOV	[DI],AL                            
+0D22:013F C3            RET	                                   
+
+Schleife1:
+0D22:0140 58            POP	AX                                 
+0D22:0141 56            PUSH	SI                                 
+0D22:0142 8A05          MOV	AL,[DI]                            
+0D22:0144 3C00          CMP	AL,00                              
+0D22:0146 75C6          JNZ	010E                               
+0D22:0148 B001          MOV	AL,01                              
+0D22:014A EB05          JMP	0151                               
+
+Rechts:
+0D22:014C 47            INC	DI                                 
+0D22:014D C3            RET	                                   
+
+0D22:014E ......        DB	"[ ]"
+
+Weiter: (Schleife1)
+0D22:0151 5E            POP	SI                                 
+0D22:0152 46            INC	SI                                 
+0D22:0153 8A24          MOV	AH,[SI]                            
+0D22:0155 80FC5B        CMP	AH,5B                              
+0D22:0158 7502          JNZ	015C                               
+0D22:015A FEC0          INC	AL                                 
+0D22:015C 80FC5D        CMP	AH,5D                              
+0D22:015F 75F1          JNZ	0152                               
+0D22:0161 FEC8          DEC	AL                                 
+0D22:0163 74A9          JZ	010E                               
+0D22:0165 EBEB          JMP	0152                               

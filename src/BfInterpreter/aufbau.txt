@@ -1,0 +1,18 @@
+arbsp leeren
+init
+hauptschleife
+plus
+punkt
+schleife
+ende
+links
+minus
+komma
+schleife1
+rechts
+suche ]
+
+arbeitsspeicher
+
+zeiger für arbsp: edi
+zeiger für code: esi

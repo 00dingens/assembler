@@ -1,0 +1,76 @@
+-u0100
+Leeren
+0D22:0100 32C0          XOR	AL,AL                              
+0D22:0102 B97401        MOV	CX,0174                            
+0D22:0105 BF7A01        MOV	DI,017A                            
+0D22:0108 F3            REPZ	                                   
+0D22:0109 AA            STOSB	                                   
+Init
+0D22:010A BA7801        MOV	DX,0178                            
+0D22:010D BF7A01        MOV	DI,017A                            
+0D22:0110 BE0108        MOV	SI,0801                            
+Schritt
+0D22:0113 B401          MOV	AH,01                              
+0D22:0115 46            INC	SI                                 
+0D22:0116 8A04          MOV	AL,[SI]                            
+0D22:0118 BBF300        MOV	BX,00F3                            
+0D22:011B D7            XLAT	                                   
+0D22:011C FFE0          JMP	AX                                 
+
+0D22:011E 2B2C2D2E      DB	"+,-."                            
+Punkt
+0D22:0122 8A1D          MOV	BL,[DI]                            
+0D22:0124 881E7801      MOV	[0178],BL                          
+0D22:0128 B80009        MOV	AX,0900                            
+0D22:012B CD21          INT	21                                 
+0D22:012D EBE4          JMP	0113                               
+
+0D22:012F 3C903E        DB	"< >"
+Links
+0D22:0132 4F            DEC	DI                                 
+0D22:0133 EBDE          JMP	0113                               
+Plus
+0D22:0135 FE05          INC	BYTE PTR [DI]                      
+0D22:0137 EBDA          JMP	0113                               
+Minus
+0D22:0139 FE0D          DEC	BYTE PTR [DI]                      
+0D22:013B EBD6          JMP	0113                               
+Schleife2
+0D22:013D 5E            POP	SI                                 
+0D22:013E 4E            DEC	SI                                 
+0D22:013F EBD2          JMP	0113                               
+Komma
+0D22:0141 B80007        MOV	AX,0700                            
+0D22:0144 CD21          INT	21                                 
+0D22:0146 8805          MOV	[DI],AL                            
+0D22:0148 EBC9          JMP	0113                               
+Rechts
+0D22:014A 47            INC	DI                                 
+0D22:014B EBC6          JMP	0113                               
+
+0D22:014D 5B205D        DB	"[ ]"
+Schleife1
+0D22:0150 56            PUSH	SI                                 
+0D22:0151 8A05          MOV	AL,[DI]                            
+0D22:0153 3C00          CMP	AL,00                              
+0D22:0155 75BC          JNZ	0113                               
+0D22:0157 5E            POP	SI                                 
+0D22:0158 B90100        MOV	CX,0001                            
+0D22:015B 46            INC	SI                                 
+0D22:015C 8A2C          MOV	CH,[SI]                            
+0D22:015E 80FD5B        CMP	CH,5B                              
+0D22:0161 7502          JNZ	0165                               
+0D22:0163 FEC1          INC	CL                                 
+0D22:0165 80FD5D        CMP	CH,5D                              
+0D22:0168 75F1          JNZ	015B                               
+0D22:016A FEC9          DEC	CL                                 
+0D22:016C 80F900        CMP	CL,00                              
+0D22:016F 74A2          JZ	0113                               
+0D22:0171 EBE8          JMP	015B                               
+Ende
+0D22:0173 B8004C        MOV	AX,4C00                            
+0D22:0176 CD21          INT	21                                 
+Data
+Zeichen
+0D22:0178 2024          DB	" $"                            
+0D22:017A 00            DB	00                    
